@@ -1,5 +1,8 @@
 import Header from "../../components/Header";
 import Input from "../../components/Input";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 
 import {
   Column,
@@ -15,13 +18,36 @@ import {
 
 import Button from "../../components/Button";
 import { MdEmail, MdLock } from "react-icons/md";
-import { useNavigate } from "react-router";
+// import { useNavigate } from "react-router";
+
+const schema = yup
+  .object({
+    email: yup
+      .string()
+      .email("O e-mail não é válido")
+      .required("O e-mail é obrigatório"),
+    password: yup
+      .string()
+      .min(8, "Sua senha deve ter, no mínimo, 8 caracteres")
+      .required("A senha é obrigatória"),
+  })
+  .required();
 
 const Login = () => {
-  const navigate = useNavigate();
-  const handleClickSignIn = () => {
+  // const navigate = useNavigate();
+  /* const handleClickSignIn = () => {
     navigate("/feed");
-  };
+  }; */
+  const {
+    control,
+    handleSubmit,
+    formState: { errors, isValid },
+  } = useForm({
+    resolver: yupResolver(schema),
+    mode: "onChange",
+  });
+  console.log(errors, isValid);
+  const onSubmit = (data) => console.log(data);
   return (
     <div>
       <Header />
@@ -36,9 +62,19 @@ const Login = () => {
           <Wrapper>
             <TitleLogin>Faça seu cadastro</TitleLogin>
             <SubtitleLogin>Faça seu login e make the change._</SubtitleLogin>
-            <form>
-              <Input placeholder="E-mail" type="email" leftIcon={<MdEmail />} />
+            <form onSubmit={handleSubmit(onSubmit)}>
               <Input
+                errorMessage={errors?.email?.message}
+                name="email"
+                control={control}
+                placeholder="E-mail"
+                type="email"
+                leftIcon={<MdEmail />}
+              />
+              <Input
+                errorMessage={errors?.password?.message}
+                name="password"
+                control={control}
                 placeholder="Senha"
                 type="password"
                 leftIcon={<MdLock />}
@@ -46,8 +82,8 @@ const Login = () => {
               <Button
                 title="Entrar"
                 variant="secondary"
-                onClick={handleClickSignIn}
-                type="button"
+                //onClick={handleClickSignIn}
+                type="submit"
               />
             </form>
             <Row>
