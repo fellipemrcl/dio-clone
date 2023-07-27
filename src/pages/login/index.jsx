@@ -18,7 +18,8 @@ import {
 
 import Button from "../../components/Button";
 import { MdEmail, MdLock } from "react-icons/md";
-// import { useNavigate } from "react-router";
+import { useNavigate } from "react-router";
+import api from "../../services/api";
 
 const schema = yup
   .object({
@@ -34,10 +35,10 @@ const schema = yup
   .required();
 
 const Login = () => {
-  // const navigate = useNavigate();
-  /* const handleClickSignIn = () => {
+  const navigate = useNavigate();
+  const handleClickSignIn = () => {
     navigate("/feed");
-  }; */
+  };
   const {
     control,
     handleSubmit,
@@ -47,7 +48,20 @@ const Login = () => {
     mode: "onChange",
   });
   console.log(errors, isValid);
-  const onSubmit = (data) => console.log(data);
+  const onSubmit = async (formData) => {
+    try {
+      const { data } = await api.get(
+        `users?email=${formData.email}&senha=${formData.password}`
+      );
+      if (data.length === 1) {
+        handleClickSignIn();
+      } else {
+        alert("Email ou senha inválidos");
+      }
+    } catch (error) {
+      alert("Houve um erro. Tente novamente.");
+    }
+  };
   return (
     <div>
       <Header />
