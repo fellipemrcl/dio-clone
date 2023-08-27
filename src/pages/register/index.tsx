@@ -7,8 +7,6 @@ import * as yup from "yup";
 import {
   Column,
   Container,
-  CriarText,
-  EsqueciText,
   JaPossuiText,
   LoginText,
   Row,
@@ -22,6 +20,7 @@ import Button from "../../components/Button";
 import { MdEmail, MdLock, MdPermIdentity } from "react-icons/md";
 import { useNavigate } from "react-router";
 import api from "../../services/api";
+import { IFormData } from "../login/types";
 
 const schema = yup
   .object({
@@ -45,12 +44,12 @@ const Register = () => {
     control,
     handleSubmit,
     formState: { errors, isValid },
-  } = useForm({
+  } = useForm<IFormData>({
     resolver: yupResolver(schema),
     mode: "onChange",
   });
   console.log(errors, isValid);
-  const onSubmit = async (formData) => {
+  const onSubmit = async (formData: IFormData) => {
     try {
       const { data } = await api.get(
         `users?email=${formData.email}&senha=${formData.password}`

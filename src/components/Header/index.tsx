@@ -10,8 +10,9 @@ import {
   UserPicture,
 } from "./styles";
 import Logo from "../../assets/logo-dio.png";
+import { IHeader } from "./types";
 
-const Header = ({ isAuth }) => {
+const Header = ({ isAuth }: IHeader) => {
   return (
     <Wrapper>
       <Container>
